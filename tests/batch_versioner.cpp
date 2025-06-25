@@ -129,129 +129,129 @@ eBlockOrder guessOrder(const std::vector<T>& data, const std::vector<u8>& height
 int main(MU int argc, char* argv[]) {
 
 
-    // Ensure the "out" directory exists
-    fs::path dirMain(argv[0]);
-    fs::path inDir = "E:\\Xbox360\\Minecraft-Xbox360-Worlds";
-    fs::path outDir = R"(C:\Users\jerrin\CLionProjects\LegacyEditor\build\versions)";
+    // // Ensure the "out" directory exists
+    // fs::path dirMain(argv[0]);
+    // fs::path inDir = "E:\\Xbox360\\Minecraft-Xbox360-Worlds";
+    // fs::path outDir = R"(C:\Users\jerrin\CLionProjects\LegacyEditor\build\versions)";
 
 
-    std::vector<std::tuple<std::string, fs::path, fs::path>> versionFiles;
+    // std::vector<std::tuple<std::string, fs::path, fs::path>> versionFiles;
 
-    for (c_auto& folder: fs::directory_iterator(inDir)) {
-        if (!is_directory(folder)) { continue; }
+    // for (c_auto& folder: fs::directory_iterator(inDir)) {
+    //     if (!is_directory(folder)) { continue; }
 
-        std::string name = folder.path().filename().string();
-        std::string tuLabel;
-        if (auto pos = name.find(' '); pos != std::string::npos)
-            tuLabel = name.substr(0, pos);
-        else
-            tuLabel = name;
-
-
-        for (c_auto& file: fs::directory_iterator(folder)) {
-            if (file.path().string().ends_with(".bin")) {
-                auto thumbnail = file.path() / "__thumbnail.png";
-                auto savegame = file.path() / "savegame.dat";
-                versionFiles.emplace_back(tuLabel, thumbnail, savegame);
-            }
-        }
-    }
-
-    std::sort(versionFiles.begin(), versionFiles.end(),
-              [](const auto& a, const auto& b) { return parseLabel(std::get<0>(a)) < parseLabel(std::get<0>(b)); });
+    //     std::string name = folder.path().filename().string();
+    //     std::string tuLabel;
+    //     if (auto pos = name.find(' '); pos != std::string::npos)
+    //         tuLabel = name.substr(0, pos);
+    //     else
+    //         tuLabel = name;
 
 
-    for (auto [tuLabel, thumbnail, savegame]: versionFiles) {
-        editor::SaveProject saveProject;
-        if (saveProject.read(savegame.string()) != 0) {
-            std::cerr << "Failed to load file: " << savegame.make_preferred() << "\n";
-            continue;
-        } else {
-            std::cout << tuLabel << ": " /*<< savegame.make_preferred()*/ << "\n";
+    //     for (c_auto& file: fs::directory_iterator(folder)) {
+    //         if (file.path().string().ends_with(".bin")) {
+    //             auto thumbnail = file.path() / "__thumbnail.png";
+    //             auto savegame = file.path() / "savegame.dat";
+    //             versionFiles.emplace_back(tuLabel, thumbnail, savegame);
+    //         }
+    //     }
+    // }
 
-            // 1. fileListing.myReadSettings.m_oldestVersion
-            int oldestVersion = saveProject.m_fileListing.oldestVersion();
-            std::cout << "fileListing.OldestVersion : " << oldestVersion << "\n";
-            // 2. fileListing.myReadSettings.m_currentVersion
-            int currentVersion = saveProject.m_fileListing.currentVersion();
-            std::cout << "fileListing.CurrentVersion: " << currentVersion << "\n";
-
-            // 3. get valid regionManager and chunkManager
-            editor::ChunkManager* chunkManager = nullptr;
-            editor::Region regionManager;
-            for (auto regionFile: saveProject.m_fileListing.ptrs.old_reg_overworld) {
-                regionManager.read(regionFile);
-                chunkManager = regionManager.getNonEmptyChunk();
-                if (chunkManager != nullptr) {
-                    break;
-                }
-            }
-            if (chunkManager == nullptr) {
-                std::cout << "Skipping TU" << tuLabel << ", no valid chunk found\n";
-                continue;
-            }
-
-            chunkManager->ensureDecompress(lce::CONSOLE::XBOX360);
-            chunkManager->readChunk(lce::CONSOLE::XBOX360);
-            editor::chunk::ChunkData* chunkData = chunkManager->chunkData;
-
-            // 3.a ChunkManager.anon.version
-            int chunkVersion = chunkData->lastVersion;
-            std::cout << "ChunkManager Version: " << chunkVersion << "\n";
-
-            // 3. ChunkManager.anon.isCompressedZip
-            // std::cout << "ChunkManager Version: " << chunkManager->chunkHeader.isZipCompressed() << "\n";
-
-            // 4. ChunkManager.anon.isCompressedRLE
-            // std::cout << "ChunkManager isCompressedRLE: " << chunkManager->chunkHeader.isRLECompressed() << "\n";
-
-            // 5. ChunkManager.anon.newSaveFlag
-            // std::cout << "ChunkManager newSaveFlag: " << chunkManager->chunkHeader.getNewSaveFlag() << "\n";
-
-            std::cout << "ChunkData chunkHeight: " << chunkData->chunkHeight << "\n";
-
-            eBlockOrder blockOrder;
-            if (chunkVersion <= 11) {
-                blockOrder = guessOrder<u8, 8>(chunkData->oldBlocks, chunkData->heightMap);
-                std::cout << "Chunkdata oldBlocks eBlockOrder: " << toString(blockOrder) << "\n";
-            } else {
-                blockOrder = guessOrder<u16, 16>(chunkData->newBlocks, chunkData->heightMap);
-                std::cout << "Chunkdata newBlocks eBlockOrder: " << toString(blockOrder) << "\n";
-            }
+    // std::sort(versionFiles.begin(), versionFiles.end(),
+    //           [](const auto& a, const auto& b) { return parseLabel(std::get<0>(a)) < parseLabel(std::get<0>(b)); });
 
 
+    // for (auto [tuLabel, thumbnail, savegame]: versionFiles) {
+    //     editor::SaveProject saveProject;
+    //     if (saveProject.read(savegame.string()) != 0) {
+    //         std::cerr << "Failed to load file: " << savegame.make_preferred() << "\n";
+    //         continue;
+    //     } else {
+    //         std::cout << tuLabel << ": " /*<< savegame.make_preferred()*/ << "\n";
 
+    //         // 1. fileListing.myReadSettings.m_oldestVersion
+    //         int oldestVersion = saveProject.m_fileListing.oldestVersion();
+    //         std::cout << "fileListing.OldestVersion : " << oldestVersion << "\n";
+    //         // 2. fileListing.myReadSettings.m_currentVersion
+    //         int currentVersion = saveProject.m_fileListing.currentVersion();
+    //         std::cout << "fileListing.CurrentVersion: " << currentVersion << "\n";
+
+    //         // 3. get valid regionManager and chunkManager
+    //         editor::ChunkManager* chunkManager = nullptr;
+    //         editor::Region regionManager;
+    //         for (auto regionFile: saveProject.m_fileListing.ptrs.old_reg_overworld) {
+    //             regionManager.read(regionFile);
+    //             chunkManager = regionManager.getNonEmptyChunk();
+    //             if (chunkManager != nullptr) {
+    //                 break;
+    //             }
+    //         }
+    //         if (chunkManager == nullptr) {
+    //             std::cout << "Skipping TU" << tuLabel << ", no valid chunk found\n";
+    //             continue;
+    //         }
+
+    //         chunkManager->ensureDecompress(lce::CONSOLE::XBOX360);
+    //         chunkManager->readChunk(lce::CONSOLE::XBOX360);
+    //         editor::chunk::ChunkData* chunkData = chunkManager->chunkData;
+
+    //         // 3.a ChunkManager.anon.version
+    //         int chunkVersion = chunkData->lastVersion;
+    //         std::cout << "ChunkManager Version: " << chunkVersion << "\n";
+
+    //         // 3. ChunkManager.anon.isCompressedZip
+    //         // std::cout << "ChunkManager Version: " << chunkManager->chunkHeader.isZipCompressed() << "\n";
+
+    //         // 4. ChunkManager.anon.isCompressedRLE
+    //         // std::cout << "ChunkManager isCompressedRLE: " << chunkManager->chunkHeader.isRLECompressed() << "\n";
+
+    //         // 5. ChunkManager.anon.newSaveFlag
+    //         // std::cout << "ChunkManager newSaveFlag: " << chunkManager->chunkHeader.getNewSaveFlag() << "\n";
+
+    //         std::cout << "ChunkData chunkHeight: " << chunkData->chunkHeight << "\n";
+
+    //         eBlockOrder blockOrder;
+    //         if (chunkVersion <= 11) {
+    //             blockOrder = guessOrder<u8, 8>(chunkData->oldBlocks, chunkData->heightMap);
+    //             std::cout << "Chunkdata oldBlocks eBlockOrder: " << toString(blockOrder) << "\n";
+    //         } else {
+    //             blockOrder = guessOrder<u16, 16>(chunkData->newBlocks, chunkData->heightMap);
+    //             std::cout << "Chunkdata newBlocks eBlockOrder: " << toString(blockOrder) << "\n";
+    //         }
 
 
 
-            if (currentVersion <= 6) {
-                std::cout << "ChunkData Keys: \n";
-                for (const auto& key: chunkData->oldNBTData.getTag("Level")->getKeySet()) {
-                    std::cout << key << ", ";
-                }
-                std::cout << "\n";
-            }
-
-            // 6. ChunkData->lastVersion
-
-            // 7. (For NBT Chunks) list of all nbt string keys
-
-            // 8. chunk height
-
-            // 9. XYZ format of blocks
-
-            // 10. XYZ format of block data
-
-            // 11. XYZ format of block/sky light
-
-            // 12. whether or not there is biomes in chunkdata
-        }
-    }
 
 
-    // print save details, dump to folder
-    // fileListing.printDetails();
-    // MU int stat = fileListing.dumpToFolder("");
+
+    //         if (currentVersion <= 6) {
+    //             std::cout << "ChunkData Keys: \n";
+    //             for (const auto& key: chunkData->oldNBTData.getTag("Level")->getKeySet()) {
+    //                 std::cout << key << ", ";
+    //             }
+    //             std::cout << "\n";
+    //         }
+
+    //         // 6. ChunkData->lastVersion
+
+    //         // 7. (For NBT Chunks) list of all nbt string keys
+
+    //         // 8. chunk height
+
+    //         // 9. XYZ format of blocks
+
+    //         // 10. XYZ format of block data
+
+    //         // 11. XYZ format of block/sky light
+
+    //         // 12. whether or not there is biomes in chunkdata
+    //     }
+    // }
+
+
+    // // print save details, dump to folder
+    // // fileListing.printDetails();
+    // // MU int stat = fileListing.dumpToFolder("");
 
 
     return 0;
