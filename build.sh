@@ -18,7 +18,8 @@ cd "$BUILD_DIR"
 cmake ..
 
 # Build the project
-cmake --build . --config Release
+cmake -DCMAKE_VERBOSE_MAKEFILE=ON ..
+cmake --build . --verbose --config Release
 
 # End the shell script
 echo "Build completed!"

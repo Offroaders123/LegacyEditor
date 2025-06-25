@@ -44,7 +44,7 @@ endif()
 project(LegacyEditor LANGUAGES C CXX)
 
 set(CMAKE_C_STANDARD            17)
-set(CMAKE_CXX_STANDARD          23)
+set(CMAKE_CXX_STANDARD          17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS       OFF)
 
@@ -57,10 +57,12 @@ if(MSVC)
         string(REPLACE "/MD" "/MT" ${flag_var} "${${flag_var}}")
     endforeach()
 elseif(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+if (NOT APPLE)
     message(STATUS "✔ Linking External Libraries")
     set(CMAKE_EXE_LINKER_FLAGS
             "${CMAKE_EXE_LINKER_FLAGS} -static-libstdc++ -static-libgcc -Wl,-Bstatic -lwinpthread -Wl,-Bdynamic"
     )
+endif()
 endif()
 
 
@@ -72,6 +74,21 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/build")
 
 # Add lce subdirectory
 add_subdirectory(include/lce)
+
+if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+    add_compile_options(
+        -Wno-deprecated-declarations
+        -Wno-unused-parameter
+        -Wno-sign-compare
+        -Wno-return-type
+        -Wno-missing-field-initializers
+        -Wno-c++98-compat
+        -Wno-c++98-compat-pedantic
+        -Wno-unused-function
+        -Wno-implicit-function-declaration
+        -Wno-nullability-completeness
+    )
+endif()
 
 # Asset Copy
 set(LCEDIT_ASSETS_SOURCE_DIR "${CMAKE_SOURCE_DIR}/assets")
@@ -124,7 +141,20 @@ set(ALL_SOURCES ${LEGACY_EDITOR_SOURCES} ${LCE_SOURCES})
 function(add_cli NAME SRC)
     add_executable(${NAME} "${SRC}" ${ALL_SOURCES})
     target_include_directories(${NAME} PRIVATE ${LCE_INCLUDE_DIR} ${OPENSSL_INCLUDE_DIR})
-    target_compile_options(${NAME} PRIVATE ${LCE_COMPILE_OPTIONS})
+    target_compile_options(${NAME} PRIVATE
+        $<$<CXX_COMPILER_ID:Clang>:
+            -Wno-deprecated-declarations
+            -Wno-unused-parameter
+            -Wno-sign-compare
+            -Wno-return-type
+            -Wno-missing-field-initializers
+            -Wno-c++98-compat
+            -Wno-c++98-compat-pedantic
+            -Wno-unused-function
+            -Wno-implicit-function-declaration
+            -Wno-nullability-completeness
+        >
+    )
     target_compile_definitions(${NAME} PRIVATE ${LCE_COMPILE_DEFINITIONS})
     if (DEFINED LCE_PCH)
         target_precompile_headers(${NAME} PUBLIC "$<$<COMPILE_LANGUAGE:CXX>:${LCE_PCH}>")
