@@ -1,5 +1,5 @@
 {
-  // "cmake.generator": "Ninja",
+  "cmake.generator": "Ninja",
   "cmake.buildDirectory": "${workspaceFolder}/build",
   "cmake.configureSettings": {
     "CMAKE_C_COMPILER": "/opt/homebrew/bin/clang",

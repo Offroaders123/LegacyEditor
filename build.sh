@@ -16,7 +16,7 @@ cd "$BUILD_DIR"
 
 # Run CMake to configure the project
 cmake "$PROJECT_DIR" \
-  # -G Ninja \
+  -G Ninja \
   -DCMAKE_BUILD_TYPE=Release \
   -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
   -DCMAKE_C_COMPILER=/opt/homebrew/bin/clang \
