@@ -1,0 +1,35 @@
+{
+  "configurations": [
+    {
+      "name": "macOS-Clang",
+      "compilerPath": "/opt/homebrew/opt/llvm/bin/clang++",
+      "cStandard": "c17",
+      "cppStandard": "c++23",
+      "intelliSenseMode": "clang-x64",
+      "includePath": [
+        "${workspaceFolder}/include",
+        "/opt/homebrew/opt/llvm/include/c++/v1",
+        "/Library/Developer/CommandLineTools/usr/include",
+        "/opt/homebrew/include"
+      ],
+      "defines": [
+        "_CRT_SECURE_NO_WARNINGS",
+        "_SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING"
+      ],
+      "compilerArgs": [
+        "-stdlib=libc++",
+        "-Wno-deprecated-declarations",
+        "-Wno-unused-parameter",
+        "-Wno-sign-compare",
+        "-Wno-return-type",
+        "-Wno-missing-field-initializers",
+        "-Wno-c++98-compat",
+        "-Wno-c++98-compat-pedantic",
+        "-Wno-unused-function",
+        "-Wno-implicit-function-declaration",
+        "-Wno-nullability-completeness"
+      ]
+    }
+  ],
+  "version": 4
+}

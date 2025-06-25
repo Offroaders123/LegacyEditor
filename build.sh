@@ -15,11 +15,17 @@ fi
 cd "$BUILD_DIR"
 
 # Run CMake to configure the project
-cmake ..
+cmake "$PROJECT_DIR" \
+  # -G Ninja \
+  -DCMAKE_BUILD_TYPE=Release \
+  -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
+  -DCMAKE_C_COMPILER=/opt/homebrew/bin/clang \
+  -DCMAKE_CXX_COMPILER=/opt/homebrew/bin/clang++ \
+  -DCMAKE_CXX_STANDARD=23 \
+  -DCMAKE_CXX_FLAGS="-stdlib=libc++"
 
 # Build the project
-cmake -DCMAKE_VERBOSE_MAKEFILE=ON ..
-cmake --build . --verbose --config Release
+cmake --build . --verbose
 
 # End the shell script
 echo "Build completed!"

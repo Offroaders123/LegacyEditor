@@ -1,0 +1,14 @@
+{
+  // "cmake.generator": "Ninja",
+  "cmake.buildDirectory": "${workspaceFolder}/build",
+  "cmake.configureSettings": {
+    "CMAKE_C_COMPILER": "/opt/homebrew/bin/clang",
+    "CMAKE_CXX_COMPILER": "/opt/homebrew/bin/clang++",
+    "CMAKE_CXX_STANDARD": "23"
+  },
+  "C_Cpp.default.compilerPath": "/opt/homebrew/bin/clang++",
+  "C_Cpp.default.cppStandard": "c++23",
+  "C_Cpp.default.cStandard": "c17",
+  "C_Cpp.default.intelliSenseMode": "clang-x64",
+  "C_Cpp.default.compileCommands": "${workspaceFolder}/cmake-build-release/compile_commands.json"
+}

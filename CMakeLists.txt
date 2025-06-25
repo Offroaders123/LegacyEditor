@@ -5,6 +5,8 @@ if (NOT CMAKE_GENERATOR)
     set(CMAKE_GENERATOR "Ninja" CACHE INTERNAL "" FORCE)
 endif()
 
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 # Compiler cache
 find_program(CCACHE_PROGRAM ccache)
 find_program(SCCACHE_PROGRAM sccache)
